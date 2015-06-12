@@ -1477,6 +1477,7 @@
             this.isActivated = false;
             this.autoselect = !!o.autoselect;
             this.minLength = _.isNumber(o.minLength) ? o.minLength : 1;
+            this.defaultSuggestions = o.defaultSuggestions;
             this.$node = buildDom(o.input, o.withHint);
             $menu = this.$node.find(".tt-dropdown-menu");
             $input = this.$node.find(".tt-input");
@@ -1540,6 +1541,10 @@
             _onFocused: function onFocused() {
                 this.isActivated = true;
                 this.dropdown.open();
+
+                if (this.input.getInputValue() == '' && this.defaultSuggestions) {
+                  this.dropdown.update('')
+                }
             },
             _onBlurred: function onBlurred() {
                 this.isActivated = false;
@@ -1735,7 +1740,8 @@
                         withHint: _.isUndefined(o.hint) ? true : !!o.hint,
                         minLength: o.minLength,
                         autoselect: o.autoselect,
-                        datasets: datasets
+                        datasets: datasets,
+                        defaultSuggestions: o.defaultSuggestions
                     });
                     $input.data(typeaheadKey, typeahead);
                 }
