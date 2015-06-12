@@ -1327,7 +1327,12 @@
         }
         _.mixin(Dropdown.prototype, EventEmitter, {
             _onSuggestionClick: function onSuggestionClick($e) {
-                this.trigger("suggestionClicked", $($e.currentTarget));
+			  var $el = $($e.currentTarget);
+              if ($el.children(0).data('disabled') == true) {
+			    return;
+			  }
+
+              this.trigger("suggestionClicked", $el);
             },
             _onSuggestionMouseEnter: function onSuggestionMouseEnter($e) {
                 this._removeCursor();
@@ -1554,6 +1559,12 @@
             _onEnterKeyed: function onEnterKeyed(type, $e) {
                 var cursorDatum, topSuggestionDatum;
                 cursorDatum = this.dropdown.getDatumForCursor();
+
+				if (cursorDatum.raw.Disabled) {
+					this.input.clearHint();
+					return $e.preventDefault();
+				}
+
                 topSuggestionDatum = this.dropdown.getDatumForTopSuggestion();
                 if (cursorDatum) {
                     this._select(cursorDatum);
@@ -1564,8 +1575,13 @@
                 }
             },
             _onTabKeyed: function onTabKeyed(type, $e) {
-                var datum;
-                if (datum = this.dropdown.getDatumForCursor()) {
+                var datum = this.dropdown.getDatumForCursor();
+				if (datum.raw.Disabled) {
+				  this.input.clearHint();
+				  return $e.preventDefault();
+				}
+
+                if (datum) {
                     this._select(datum);
                     $e.preventDefault();
                 } else {
