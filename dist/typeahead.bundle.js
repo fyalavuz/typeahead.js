@@ -1560,10 +1560,10 @@
                 var cursorDatum, topSuggestionDatum;
                 cursorDatum = this.dropdown.getDatumForCursor();
 
-				if (cursorDatum.raw.Disabled) {
-					this.input.clearHint();
-					return $e.preventDefault();
-				}
+		if (cursorDatum && cursorDatum.raw && cursorDatum.raw.Disabled) {
+		    this.input.clearHint();
+		    return $e.preventDefault();
+		}
 
                 topSuggestionDatum = this.dropdown.getDatumForTopSuggestion();
                 if (cursorDatum) {
@@ -1576,12 +1576,13 @@
             },
             _onTabKeyed: function onTabKeyed(type, $e) {
                 var datum = this.dropdown.getDatumForCursor();
-				if (datum.raw.Disabled) {
-				  this.input.clearHint();
-				  return $e.preventDefault();
-				}
-
+		
                 if (datum) {
+                    if (datum.raw && datum.raw.Disabled) {
+                        this.input.clearHint();
+		        return $e.preventDefault();
+                    }
+                	
                     this._select(datum);
                     $e.preventDefault();
                 } else {
